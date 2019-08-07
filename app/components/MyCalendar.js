@@ -4,7 +4,6 @@ import $ from 'jquery';
 
 export class MyCalendar extends Calendar{
 
-
   customView = () => {
     $( ".react-calendar__tile" ).css( "padding", "2em 2em" );
     $( ".react-calendar" ).css( "width", "auto" );

@@ -16,7 +16,7 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 
 const path = require('path');
-var knex = require("knex")({
+const knex = require("knex")({
 	client: "sqlite3",
 	connection: {
 		filename: path.join(__dirname, 'database.sqlite')
@@ -70,9 +70,9 @@ app.on('window-all-closed', () => {
 
 app.on('ready', async () => {
 
-  ipcMain.on("dateChange", function (event, args) {
-		let result = knex.select("name").from("test").where('date', '=', args.date);
-		result.then(function(rows){
+  ipcMain.on("dateChange", (event, args) => {
+		const result = knex.select("name").from("test").where('date', '=', args.date);
+		result.then((rows) => {
       event.returnValue = rows;
 			console.log(rows);
 		})

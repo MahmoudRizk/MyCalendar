@@ -2,23 +2,18 @@ import React, {Component} from 'react'
 
 import ListGroup from 'react-bootstrap/ListGroup'
 
-import styles from '../assets/css/CalendarEventsList.css'
+import '../assets/css/CalendarEventsList.css'
 
 export class CalendarEventsList extends Component{
 
   render(){
-    console.log("========>", this.props.data)
-    const view = this.props.data.map((d) => {
-        return <ListGroup.Item variant="primary">{d.name}</ListGroup.Item>;
-    })
-    return(
+    const view = this.props.data.map((d) => <ListGroup.Item variant="primary">{d.name}</ListGroup.Item>)
 
-      <ListGroup className="events-list scrollbar-primary">
-        {view}
-      </ListGroup>
-
-    );
-  }
+  return(
+    <ListGroup className="events-list scrollbar-primary">
+      {view}
+    </ListGroup>
+  )}
 
 }
 
