@@ -37,12 +37,16 @@ export class App extends Component{
       <Container fluid>
         <Row>
           <Col sm={8} className="MyCalendar-col">
-            <MyCalendar onChange={this.onChange}
-            value={date}
-            calendarType="Arabic"/>
+            <MyCalendar
+              onChange={this.onChange}
+              value={date}
+              calendarType="Arabic"
+            />
           </Col>
           <Col sm={4} className="CalendarEventsList-col">
-            <CalendarEventsList data={result}/>
+            <CalendarEventsList
+              data={result}
+            />
           </Col>
         </Row>
       </Container>
