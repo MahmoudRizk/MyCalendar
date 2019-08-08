@@ -23,12 +23,24 @@ export class App extends Component{
     this.setState({result});
   }
 
+  addCalendarEvent = entry => {
+    console.log("=====>", entry);
+    const response = ipcRenderer.sendSync("addCalendarEvent", {date: this.formatDate(this.state.date), entry: entry});
+    console.log("------->", response)
+    this.onChange(this.state.date);
+  }
+
   formatDate = date => {
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
 
     return `${year  }/${  month  }/${  day}`;
+  }
+
+  componentDidMount(){
+    const result = ipcRenderer.sendSync("dateChange", {date: this.formatDate(this.state.date)});
+    this.setState({result});
   }
 
   render(){
@@ -45,7 +57,9 @@ export class App extends Component{
           </Col>
           <Col sm={4} className="CalendarEventsList-col">
             <CalendarEventsList
-              data={result}
+              result={result}
+              date={this.formatDate(date)}
+              addCalendarEvent={this.addCalendarEvent}
             />
           </Col>
         </Row>

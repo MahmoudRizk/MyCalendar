@@ -74,8 +74,13 @@ app.on('ready', async () => {
 		const result = knex.select("name").from("test").where('date', '=', args.date);
 		result.then((rows) => {
       event.returnValue = rows;
-			console.log(rows);
 		})
+	});
+
+	ipcMain.on("addCalendarEvent", (event, args) => {
+		console.log(args);
+		let a = knex("test").insert([{name: args.entry, date: args.date}]).then();
+		event.returnValue = a;
 	});
 
 
