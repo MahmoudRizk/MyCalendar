@@ -71,8 +71,9 @@ app.on('window-all-closed', () => {
 app.on('ready', async () => {
 
   ipcMain.on("dateChange", (event, args) => {
-		const result = knex.select("name").from("test").where('date', '=', args.date);
+		const result = knex.select(["id", "name", "date"]).from("test").where('date', '=', args.date);
 		result.then((rows) => {
+			console.log(rows);
       event.returnValue = rows;
 		})
 	});
@@ -83,6 +84,10 @@ app.on('ready', async () => {
 		event.returnValue = a;
 	});
 
+	ipcMain.on("delCalendarEvent", (event, args) => {
+		let a = knex("test").where({id: args.id}).del().then();
+		event.returnValue = a;
+	})
 
   if (
     process.env.NODE_ENV === 'development' ||

@@ -30,6 +30,11 @@ export class App extends Component{
     this.onChange(this.state.date);
   }
 
+  delCalendarEvent = (id) => {
+    const response = ipcRenderer.sendSync("delCalendarEvent", {id: id});
+    this.onChange(this.state.date);
+  }
+
   formatDate = date => {
     const day = date.getDate();
     const month = date.getMonth() + 1;
@@ -60,6 +65,7 @@ export class App extends Component{
               result={result}
               date={this.formatDate(date)}
               addCalendarEvent={this.addCalendarEvent}
+              delCalendarEvent={this.delCalendarEvent}
             />
           </Col>
         </Row>

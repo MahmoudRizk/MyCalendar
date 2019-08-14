@@ -12,7 +12,6 @@ import $ from 'jquery';
 export class CalendarEventsList extends Component{
 
   render(){
-  const view = this.props.result.map((d) => <ListGroup.Item variant="primary">{d.name}</ListGroup.Item>)
 
   const buttonClick = () => {
     const val = $( ".form-control.events-input" ).val().trim();
@@ -22,6 +21,20 @@ export class CalendarEventsList extends Component{
     }
 
   }
+
+  const delButtonClick = () => {
+    this.props.delCalendarEvent(event.srcElement.id);
+    console.log(event.srcElement.id);
+  }
+
+  const view = this.props.result.map((d) =>
+    <ListGroup.Item variant="primary">
+      <Button id={d.id} onClick={delButtonClick}>
+        Delete
+      </Button>
+      {d.name}
+    </ListGroup.Item>)
+
 
   return(
     <ListGroup className="events-list scrollbar-primary">
