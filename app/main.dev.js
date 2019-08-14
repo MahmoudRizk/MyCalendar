@@ -89,6 +89,11 @@ app.on('ready', async () => {
 		event.returnValue = a;
 	})
 
+	ipcMain.on("updateCalendarEvent", (event, args) => {
+		let a = knex("test").where({id: args.id}).update({'name': args.entry}).then();
+		event.returnValue = a;
+	})
+
   if (
     process.env.NODE_ENV === 'development' ||
     process.env.DEBUG_PROD === 'true'

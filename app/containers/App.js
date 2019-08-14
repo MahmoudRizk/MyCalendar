@@ -35,6 +35,11 @@ export class App extends Component{
     this.onChange(this.state.date);
   }
 
+  updateCalendarEvent = (id, entry) => {
+    const response = ipcRenderer.sendSync("updateCalendarEvent", {id: id, entry: entry});
+    this.onChange(this.state.date);
+  }
+
   formatDate = date => {
     const day = date.getDate();
     const month = date.getMonth() + 1;
@@ -66,6 +71,7 @@ export class App extends Component{
               date={this.formatDate(date)}
               addCalendarEvent={this.addCalendarEvent}
               delCalendarEvent={this.delCalendarEvent}
+              updateCalendarEvent={this.updateCalendarEvent}
             />
           </Col>
         </Row>
