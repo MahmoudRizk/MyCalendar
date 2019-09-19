@@ -15,14 +15,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 
-const path = require('path');
-const knex = require("knex")({
-	client: "sqlite3",
-	connection: {
-		filename: path.join(__dirname, 'database.sqlite')
-	}
-});
-
+import {CalEvent} from './models/CalEvent';
 
 export default class AppUpdater {
   constructor() {
@@ -68,30 +61,39 @@ app.on('window-all-closed', () => {
   }
 });
 
+
 app.on('ready', async () => {
 
   ipcMain.on("dateChange", (event, args) => {
-		const result = knex.select(["id", "name", "date"]).from("test").where('date', '=', args.date);
-		result.then((rows) => {
-			console.log(rows);
-      event.returnValue = rows;
-		})
+    const calEvent = new CalEvent();
+    let rows = calEvent.queryByDate(args.date);
+    rows.then((result) => {
+      event.returnValue = result;
+    });
+
 	});
 
+
 	ipcMain.on("addCalendarEvent", (event, args) => {
-		console.log(args);
-		let a = knex("test").insert([{name: args.entry, date: args.date}]).then();
-		event.returnValue = a;
+    const calEvent = new CalEvent();
+    calEvent.addEntry(args).then((success)=>{
+      event.returnValue = success;
+    });
 	});
 
 	ipcMain.on("delCalendarEvent", (event, args) => {
-		let a = knex("test").where({id: args.id}).del().then();
-		event.returnValue = a;
-	})
+    const calEvent = new CalEvent();
+    calEvent.delEntry(args).then((success)=>{
+      event.returnValue = success;
+    });
+	});
 
 	ipcMain.on("updateCalendarEvent", (event, args) => {
-		let a = knex("test").where({id: args.id}).update({'name': args.entry}).then();
-		event.returnValue = a;
+    const calEvent = new CalEvent();
+    calEvent.updateEntry(args).then((success)=>{
+      event.returnValue = success;
+    });
+
 	})
 
   if (
