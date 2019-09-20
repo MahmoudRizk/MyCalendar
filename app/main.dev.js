@@ -10,12 +10,13 @@
  *
  * @flow
  */
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow} from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 
-import {CalEvent} from './models/CalEvent';
+import {EventHandler} from './EventHandler';
+
 
 export default class AppUpdater {
   constructor() {
@@ -64,37 +65,7 @@ app.on('window-all-closed', () => {
 
 app.on('ready', async () => {
 
-  ipcMain.on("dateChange", (event, args) => {
-    const calEvent = new CalEvent();
-    let rows = calEvent.queryByDate(args.date);
-    rows.then((result) => {
-      event.returnValue = result;
-    });
-
-	});
-
-
-	ipcMain.on("addCalendarEvent", (event, args) => {
-    const calEvent = new CalEvent();
-    calEvent.addEntry(args).then((success)=>{
-      event.returnValue = success;
-    });
-	});
-
-	ipcMain.on("delCalendarEvent", (event, args) => {
-    const calEvent = new CalEvent();
-    calEvent.delEntry(args).then((success)=>{
-      event.returnValue = success;
-    });
-	});
-
-	ipcMain.on("updateCalendarEvent", (event, args) => {
-    const calEvent = new CalEvent();
-    calEvent.updateEntry(args).then((success)=>{
-      event.returnValue = success;
-    });
-
-	})
+  new EventHandler();
 
   if (
     process.env.NODE_ENV === 'development' ||
