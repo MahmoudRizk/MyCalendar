@@ -24,20 +24,38 @@ export class App extends Component{
   }
 
   addCalendarEvent = entry => {
-    console.log("=====>", entry);
     const response = ipcRenderer.sendSync("addCalendarEvent", {date: this.formatDate(this.state.date), entry: entry});
-    console.log("------->", response)
-    this.onChange(this.state.date);
+    if(response.success){
+      this.state.result.push({date: this.formatDate(this.state.date), id: response.id, name: entry});
+      this.setState(this.state.result);
+    }
+    else{
+      console.log("Database Error!!");
+    }
   }
 
   delCalendarEvent = (id) => {
     const response = ipcRenderer.sendSync("delCalendarEvent", {id: id});
-    this.onChange(this.state.date);
+    if(response){
+      const pos = this.state.result.map(function(e) { return e.id.toString(); }).indexOf(id.toString());
+      this.state.result.splice(pos, 1);
+      this.setState(this.state.result);
+    }
+    else{
+      console.log("Database Error!!");
+    }
   }
 
   updateCalendarEvent = (id, entry) => {
     const response = ipcRenderer.sendSync("updateCalendarEvent", {id: id, entry: entry});
-    this.onChange(this.state.date);
+    if(response){
+      const pos = this.state.result.map(function(e) { return e.id.toString(); }).indexOf(id.toString());
+      this.state.result[pos].name = entry;
+      this.setState(this.state.result);
+    }
+    else{
+      console.log("Database Error!!");
+    }
   }
 
   formatDate = date => {
@@ -52,6 +70,7 @@ export class App extends Component{
     const result = ipcRenderer.sendSync("dateChange", {date: this.formatDate(this.state.date)});
     this.setState({result});
   }
+
 
   render(){
     const {date, result} = this.state;

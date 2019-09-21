@@ -20,14 +20,16 @@ export class CalEvent{
 	}
 
 	async addEntry(args){
-		var success;
-		await knex("test").insert([{name: args.entry, date: args.date}]).then(()=>{
-			success = true;
+		var response = {};
+		await knex("test").insert([{name: args.entry, date: args.date}]).then((args)=>{
+			response.success = true;
+			response.id = args[0];
 		})
 		.catch(()=>{
-			success = false;
+			response.success = false;
+			response.id = "";
 		});
-		return success;
+		return response;
 	}
 
 	async delEntry(args){
