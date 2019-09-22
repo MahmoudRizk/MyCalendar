@@ -12,7 +12,7 @@ export class CalEvent{
 
 	async queryByDate(date){
 		var data = [];
-	  const result = knex.select(["id", "name", "date"]).from("test").where('date', '=', date);
+	  const result = knex.select(["id", "name", "date"]).from("cal_event").where('date', '=', date);
 	  await result.then((rows) => {
 	    data = rows;
 	  })
@@ -21,7 +21,7 @@ export class CalEvent{
 
 	async addEntry(args){
 		var response = {};
-		await knex("test").insert([{name: args.entry, date: args.date}]).then((args)=>{
+		await knex("cal_event").insert([{name: args.entry, date: args.date}]).then((args)=>{
 			response.success = true;
 			response.id = args[0];
 		})
@@ -34,7 +34,7 @@ export class CalEvent{
 
 	async delEntry(args){
 		var success;
-		await knex("test").where({id: args.id}).del().then(()=>{
+		await knex("cal_event").where({id: args.id}).del().then(()=>{
 			success = true;
 		})
 		.catch(()=>{
@@ -45,7 +45,7 @@ export class CalEvent{
 
 	async updateEntry(args){
 		var success;
-		await knex("test").where({id: args.id}).update({'name': args.entry}).then(()=>{
+		await knex("cal_event").where({id: args.id}).update({'name': args.entry}).then(()=>{
 			success = true;
 		})
 		.catch(()=>{
