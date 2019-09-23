@@ -5,9 +5,12 @@ import $ from 'jquery';
 export class MyCalendar extends Calendar{
 
   customView = () => {
-    $( ".react-calendar__tile" ).css( "padding", "2em 2em" );
+    // let padDim = $(window).height() / 16
+    $( ".react-calendar__tile" ).css( "padding", "1.95em" );
     $( ".react-calendar" ).css( "width", "auto" );
-    $( ".react-calendar" ).css( "height", "auto" );
+    // $( ".react-calendar" ).css( "height", "auto" );
+    // console.log($(window).height());
+    // console.log($(window).width());
   }
 
   componentDidMount(){

@@ -82,6 +82,7 @@ export class App extends Component{
               onChange={this.onChange}
               value={date}
               calendarType="Arabic"
+              showFixedNumberOfWeeks={true}
             />
           </Col>
           <Col sm={4} className="CalendarEventsList-col">
