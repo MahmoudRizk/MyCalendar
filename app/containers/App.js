@@ -7,6 +7,8 @@ import {CalendarEventsList} from '../components/CalendarEventsList'
 
 import '../assets/css/App.css';
 
+import $ from 'jquery';
+
 export class App extends Component{
 
   constructor(props) {
@@ -18,6 +20,20 @@ export class App extends Component{
   }
 
   onChange = date => {
+    console.log("=======>", date);
+    console.log("=======>", this.state.date);
+    if(date.getMonth() !== this.state.date.getMonth() ||
+       date.getYear() !== this.state.date.getYear()){
+       const response = ipcRenderer.sendSync("getMonthYearEvents", {date: this.formatDate(date)});
+       console.log(response);
+       response.map((res) => {
+         console.log(res.date, res.count);
+         let val = res.date.split("/");
+         val = val[0] + val[1] + val[2];
+         $("._"+val).css( "background", "red" );
+       })
+
+    }
     this.setState({ date });
     const result = ipcRenderer.sendSync("dateChange", {date: this.formatDate(date)});
     this.setState({result});
@@ -66,6 +82,12 @@ export class App extends Component{
     return `${year  }/${  month  }/${  day}`;
   }
 
+  setDateClass = ({date, view}) => {
+    let val = this.formatDate(date).toString().split("/");
+    val = val[0] + val[1] + val[2];
+    return "_" + val.toString();
+  }
+
   componentDidMount(){
     const result = ipcRenderer.sendSync("dateChange", {date: this.formatDate(this.state.date)});
     this.setState({result});
@@ -83,6 +105,7 @@ export class App extends Component{
               value={date}
               calendarType="Arabic"
               showFixedNumberOfWeeks={true}
+              tileClassName={this.setDateClass}
             />
           </Col>
           <Col sm={4} className="CalendarEventsList-col">

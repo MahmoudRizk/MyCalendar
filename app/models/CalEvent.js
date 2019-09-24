@@ -19,6 +19,23 @@ export class CalEvent{
 	  return data;
 	}
 
+	async queryByMonthYear(date){
+		var data = [];
+		date = date.split("/");
+		date = date[0]+"/"+date[1]+"/%";
+		const result = knex.select([knex.raw('COUNT(date) as count'), "date"])
+											  .from("cal_event")
+												.where('date', 'like', date)
+												.groupBy('date');
+	  await result.then((rows) => {
+	    data = rows;
+	  })
+		console.log("------>", date);
+		console.log(data);
+		return data;
+
+	}
+
 	async addEntry(args){
 		var response = {};
 		await knex("cal_event").insert([{name: args.entry, date: args.date}]).then((args)=>{

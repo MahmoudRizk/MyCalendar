@@ -10,7 +10,14 @@ export class EventHandler{
       rows.then((result) => {
         event.returnValue = result;
       });
+    });
 
+    ipcMain.on("getMonthYearEvents", (event, args) => {
+      const calEvent = new CalEvent();
+      const rows = calEvent.queryByMonthYear(args.date);
+      rows.then((result) => {
+        event.returnValue = result;
+      });
     });
 
     ipcMain.on("delCalendarEvent", (event, args) => {
@@ -33,6 +40,7 @@ export class EventHandler{
         event.returnValue = success;
       });
     });
+
   }
 
 }
