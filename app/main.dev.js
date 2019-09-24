@@ -78,7 +78,7 @@ app.on('ready', async () => {
     show: false,
     width: 1024,
     height: 728,
-    minHeight: 600,
+    minHeight: 700,
     minWidth: 1000,
   });
 
