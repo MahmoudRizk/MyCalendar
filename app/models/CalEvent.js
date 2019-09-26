@@ -7,8 +7,45 @@ const knex = require("knex")({
 	}
 });
 
+class MigrationSource {
+  constructor(){};
+  // Must return a Promise containing a list of migrations.
+  // Migrations can be whatever you want, they will be passed as
+  // arguments to getMigrationName and getMigration
+  getMigrations() {
+    // In this example we are just returning migration names
+    return Promise.resolve(['migration1'])
+  }
+
+  getMigrationName(migration) {
+    return migration;
+  }
+
+  getMigration(migration) {
+    switch(migration) {
+      case 'migration1':
+        return {
+          up(knex)   {
+            return knex.schema.createTable('cal_event', function(t) {
+                  t.increments('id').unsigned().primary();
+                  t.text('name').nullable();
+                  t.text('date').nullable();
+              });
+          },
+          down(knex) {
+            return knex.schema.dropTable('cal_event');
+          }
+        };
+    }
+  }
+}
+
 export class CalEvent{
 	constructor(){};
+
+	static migrate(){
+		knex.migrate.latest({migrationSource: new MigrationSource()});
+	}
 
 	async queryByDate(date){
 		var data = [];

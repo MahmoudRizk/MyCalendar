@@ -16,6 +16,7 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 
 import {EventHandler} from './EventHandler';
+import {Migrations} from './models/Migrations';
 
 
 export default class AppUpdater {
@@ -66,6 +67,7 @@ app.on('window-all-closed', () => {
 app.on('ready', async () => {
 
   new EventHandler();
+  new Migrations();
 
   if (
     process.env.NODE_ENV === 'development' ||
