@@ -253,7 +253,8 @@
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10",
     "webpack-merge": "^4.1.4",
-    "yarn": "^1.12.3"
+    "yarn": "^1.12.3",
+    "react-calendar": "^2.19.0"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.5.0",
@@ -272,7 +273,6 @@
     "postcss": "^7.0.2",
     "react": "^16.7.0-alpha.2",
     "react-bootstrap": "^1.0.0-beta.10",
-    "react-calendar": "^2.19.0",
     "react-dom": "^16.7.0-alpha.2",
     "react-hot-loader": "^4.3.12",
     "react-redux": "^5.1.1",
