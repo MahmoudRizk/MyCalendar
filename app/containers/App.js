@@ -103,12 +103,15 @@ export class App extends Component{
 
   onActiveDateChange = ({ activeStartDate, view }) => {
     console.log("onActiveDateChange", activeStartDate);
-    this.state.date=activeStartDate;
-    this.setState(this.state.date);
+    let date = activeStartDate;
+    date.setDate(this.state.date.getDate());
+    this.setState({date});
+    this.onChange(date);
     // this.tagCalendarTiles(activeStartDate);
   }
 
-  onDrillDown = ({ activeStartDate, view }) => console.log('Drilled down to: ', activeStartDate, view);
+  // onDrillDown = ({ activeStartDate, view }) => console.log('Drilled down to: ', activeStartDate, view);
+  onDrillDown = this.onActiveDateChange;
   onClickDay = (value) => console.log('Clicked day: ', value);
   tileContent =  ({ date, view }) => view === 'month' ? <p Style="visibility: hidden;">.</p> : null
   componentDidMount(){
