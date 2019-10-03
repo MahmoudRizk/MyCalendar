@@ -225,6 +225,18 @@ export default class MenuBuilder {
                   click: () => {
                     this.mainWindow.toggleDevTools();
                   }
+                },
+                {
+                  label: 'test',
+                  click: () =>{
+                    // this.mainWindow.open();
+                    let child = new BrowserWindow({ parent: this.mainWindow, modal: true, show: false,width: 460,
+                    height: 600, resizable: false, frame: false})
+                    child.loadURL(`file://${__dirname}/modal.html`);
+                    child.once('ready-to-show', () => {
+                      child.show()
+                    })
+                  }
                 }
               ]
             : [

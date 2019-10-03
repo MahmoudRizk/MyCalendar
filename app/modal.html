@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>electron Modal</title>
+    <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+    crossorigin="anonymous"
+    />
+    <script>let $ = require('jquery');</script>
+    <script>require('popper.js');</script>
+    <script>require('bootstrap');</script>
+  </head>
+  <body>
+    <script>
+      {
+        const remote = require('electron').remote;
+        function modalClose(){
+           console.log("button pressed!!");
+           var window = remote.getCurrentWindow();
+           window.close();
+         }
+
+         function modalAdd(){
+            console.log("button pressed!!");
+            let a = $('#gmail-token-1').val();
+            console.log(a);
+          }
+
+          function modalAddOutlook(){
+             console.log("button pressed!!");
+             let a = $('#outlook-token-1').val();
+             console.log(a);
+           }
+      }
+    </script>
+    <div class="container" style="margin: 10px 0px 0px 0px;">
+      <div>
+        <h2>Settings</h2>
+      </div>
+      <hr class="style1">
+      <!-- Navigation tabs -->
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <a class="nav-item nav-link active" id="nav-gmail-tab" data-toggle="tab" href="#nav-gmail" role="tab" aria-controls="nav-gmail" aria-selected="true">Gmail</a>
+          <a class="nav-item nav-link" id="nav-outlook-tab" data-toggle="tab" href="#nav-outlook" role="tab" aria-controls="nav-outlook" aria-selected="false">Outlook</a>
+        </div>
+      </nav>
+      <!-- Gmail tab content -->
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-gmail" role="tabpanel" aria-labelledby="nav-gmail-tab">
+          <form>
+            <div class="form-group row">
+              <label for="gmail-token-1" class="col-sm-2 col-form-label">Token 1</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="gmail-token-1" placeholder="Token 1">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="gmail-token-2" class="col-sm-2 col-form-label">Token 2</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="gmail-token-2" placeholder="Token 2">
+              </div>
+            </div>
+          </form>
+          <div class="form-group row">
+            <div class="col-sm-10">
+              <button type="button" class="btn btn-primary" onclick="modalAdd()">Add</button>
+              <button type="button" class="btn btn-primary" onclick="modalClose()">Close</button>
+            </div>
+          </div>
+        </div>
+        <!-- Outlook tab content -->
+        <div class="tab-pane fade" id="nav-outlook" role="tabpanel" aria-labelledby="nav-outlook-tab">
+          <form>
+            <div class="form-group row">
+              <label for="outlook-token-1" class="col-sm-2 col-form-label">Token 1</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="outlook-token-1" placeholder="Token 1">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="outlook-token-2" class="col-sm-2 col-form-label">Token 2</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="outlook-token-2" placeholder="Token 2">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="outlook-token-3" class="col-sm-2 col-form-label">Token 3</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="outlook-token-3" placeholder="Token 3">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="outlook-token-4" class="col-sm-2 col-form-label">Token 4</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="outlook-token-4" placeholder="Token 4">
+              </div>
+            </div>
+          </form>
+          <div class="form-group row">
+            <div class="col-sm-10">
+              <button type="button" class="btn btn-primary" onclick="modalAddOutlook()">Add</button>
+              <button type="button" class="btn btn-primary" onclick="modalClose()">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <script>
+      {
+        const electron = require('electron');
+        const path = require('path');
+        const homedir = require('os').homedir();
+        const knex = require("knex")({
+        	client: "sqlite3",
+        	connection: {
+        		filename: path.join(homedir, 'database.sqlite')
+        	}
+        });
+        const result = knex.select(["id", "name", "date"]).from("cal_event");
+    	  result.then((rows) => {
+    	    console.log(rows);
+    	  })
+        const response = electron.ipcRenderer.sendSync("updateCalendarEvent", {id:5 , entry: "abc test modal"});
+        console.log("hello from Modal!!", response);
+
+
+
+      }
+    </script>
+  </body>
+</html>
