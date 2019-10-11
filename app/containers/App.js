@@ -36,7 +36,7 @@ export class App extends Component{
       val = val[0] + val[1] + val[2];
       // $("._"+val).css("background", "");
       $("._"+val).children().css( "font-weight", "normal" )
-      $("._"+val).children("p").css( "visibility", "hidden" );
+      $("._"+val).children("div").css( "visibility", "hidden" );
     }
   }
 
@@ -107,10 +107,11 @@ export class App extends Component{
     // this.tagCalendarTiles(activeStartDate);
   }
 
-  // onDrillDown = ({ activeStartDate, view }) => console.log('Drilled down to: ', activeStartDate, view);
   onDrillDown = this.onActiveDateChange;
   onClickDay = (value) => console.log('Clicked day: ', value);
-  tileContent =  ({ date, view }) => view === 'month' ? <p Style="visibility: hidden;">.</p> : null
+  tileContent =  ({ date, view }) => view === 'month' ? <div Style="visibility: hidden;">.</div> : null
+
+
   componentDidMount(){
     this.tagCalendarTiles(this.state.date);
     const result = ipcRenderer.sendSync("dateChange", {date: this.formatDate(this.state.date)});
