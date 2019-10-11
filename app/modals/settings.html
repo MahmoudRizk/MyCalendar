@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>electron Modal</title>
+    <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+    crossorigin="anonymous"
+    />
+    <script>let $ = require('jquery');</script>
+    <script>require('popper.js');</script>
+    <script>require('bootstrap');</script>
+    <script src="settings.js"></script>
+  </head>
+  <body>
+    <div class="container" style="margin: 10px 0px 0px 0px;">
+      <button onclick="modalClose()" style="margin: 10px 0px 0px 0px;" type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div>
+        <h2>Settings</h2>
+      </div>
+
+      <hr class="style1">
+      <!-- Navigation tabs -->
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <a class="nav-item nav-link active" id="nav-gmail-tab" data-toggle="tab" href="#nav-gmail" role="tab" aria-controls="nav-gmail" aria-selected="true">Gmail</a>
+          <a class="nav-item nav-link" id="nav-outlook-tab" data-toggle="tab" href="#nav-outlook" role="tab" aria-controls="nav-outlook" aria-selected="false">Outlook</a>
+        </div>
+      </nav>
+      <!-- Gmail tab content -->
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-gmail" role="tabpanel" aria-labelledby="nav-gmail-tab">
+          <div class="btn white darken-4 col s10 m4">
+               <button onclick="GmailLoginBtn()" style="text-transform:none; background-color:#ffffff;">
+                   <div class="left">
+                       <img width="20px" alt="Google &quot;G&quot; Logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"/>
+                   </div>
+                   Login with Google
+               </button>
+          </div>
+          <form id="gmail-form" style="display: none;">
+            <div class="form-group row">
+              <label for="gmail-token" class="col-sm-2 col-form-label">API Token</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="gmail-token" placeholder="API Token">
+                <br>
+                <p style="font-size:80%; opacity: 0.5;">Copy and Paste the token from your browser to the API token box, then press Add.</p>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-10">
+                <button type="button" class="btn btn-primary" onclick="gmailAdd()">Add</button>
+                <button type="button" class="btn btn-primary" onclick="modalClose()">Close</button>
+              </div>
+            </div>
+          </form>
+
+        </div>
+        <!-- Outlook tab content -->
+        <div class="tab-pane fade" id="nav-outlook" role="tabpanel" aria-labelledby="nav-outlook-tab">
+          <form>
+            <div class="form-group row">
+              <label for="outlook-token" class="col-sm-2 col-form-label">Token</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="outlook-token" placeholder="Token" disabled>
+                <br>
+                <p style="font-size:80%; opacity: 0.5; color:red;">This feature is not working yet :( .</p>
+              </div>
+            </div>
+          </form>
+          <div class="form-group row">
+            <div class="col-sm-10">
+              <button type="button" class="btn btn-primary" onclick="outlookAdd()" disabled>Add</button>
+              <button type="button" class="btn btn-primary" onclick="modalClose()">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
