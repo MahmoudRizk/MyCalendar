@@ -232,6 +232,7 @@
     "opencollective-postinstall": "^2.0.1",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "prettier": "^1.15.2",
+    "react-calendar": "^2.19.0",
     "react-test-renderer": "^16.6.3",
     "redux-logger": "^3.0.6",
     "rimraf": "^2.6.2",
@@ -253,8 +254,7 @@
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10",
     "webpack-merge": "^4.1.4",
-    "yarn": "^1.12.3",
-    "react-calendar": "^2.19.0"
+    "yarn": "^1.12.3"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.5.0",
@@ -263,10 +263,13 @@
     "electron-debug": "^2.0.0",
     "electron-log": "^2.2.17",
     "electron-updater": "^3.2.3",
+    "googleapis": "^43.0.0",
     "history": "^4.7.2",
     "jest-transform-css": "^2.0.0",
     "jquery": "^3.4.1",
     "knex": "^0.19.1",
+    "moment": "^2.24.0",
+    "opn": "^6.0.0",
     "path": "^0.12.7",
     "popper": "^1.0.1",
     "popper.js": "^1.14.7",
