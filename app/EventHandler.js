@@ -1,5 +1,7 @@
+const {HOME} = require('./constants/directories');
 import {ipcMain } from 'electron';
 import {CalEvent} from './models/CalEvent';
+
 
 export class EventHandler{
   constructor(){

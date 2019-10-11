@@ -15,6 +15,9 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 
+const fs = require('fs');
+const {HOME} = require('./constants/directories');
+
 import {EventHandler} from './EventHandler';
 import {Migrations} from './models/Migrations';
 
@@ -65,6 +68,10 @@ app.on('window-all-closed', () => {
 
 
 app.on('ready', async () => {
+
+  if (!fs.existsSync(HOME)){
+      fs.mkdirSync(HOME);
+  }
 
   new EventHandler();
   new Migrations();

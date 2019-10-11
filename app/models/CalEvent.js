@@ -1,9 +1,10 @@
+const {HOME} = require('../constants/directories');
 const path = require('path');
-const homedir = require('os').homedir();
+
 const knex = require("knex")({
 	client: "sqlite3",
 	connection: {
-		filename: path.join(homedir, 'database.sqlite')
+		filename: path.join(HOME, 'database.sqlite')
 	}
 });
 
