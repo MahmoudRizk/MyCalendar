@@ -59,8 +59,8 @@ export class CalEvent{
 
 	async queryByMonthYear(date){
 		var data = [];
-		date = date.split("/");
-		date = date[0]+"/"+date[1]+"/%";
+		date = date.split("-");
+		date = date[0]+"-"+date[1]+"-%";
 		const result = knex.select([knex.raw('COUNT(date) as count'), "date"])
 											  .from("cal_event")
 												.where('date', 'like', date)

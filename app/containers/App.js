@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {ipcRenderer} from  'electron';
 import {Container, Row, Col} from 'react-bootstrap';
+const moment = require('moment');
 
 import {MyCalendar} from '../components/MyCalendar'
 import {CalendarEventsList} from '../components/CalendarEventsList'
@@ -25,13 +26,13 @@ export class App extends Component{
     console.log(this.state);
     response.map((res) => {
       console.log(res.date, res.count);
-      let val = res.date.split("/");
+      let val = res.date.split("-");
       val = val[0] + val[1] + val[2];
       // $("._"+val).css( "background", "#deeeff" );
       $("._"+val).children().css( "font-weight", "900" ).css( "visibility", "visible" );
     });
     if(this.state.result.length === 0){
-      let val = this.formatDate(this.state.date).split("/");
+      let val = this.formatDate(this.state.date).split("-");
       val = val[0] + val[1] + val[2];
       // $("._"+val).css("background", "");
       $("._"+val).children().css( "font-weight", "normal" )
@@ -88,15 +89,11 @@ export class App extends Component{
   }
 
   formatDate = date => {
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-
-    return `${year  }/${  month  }/${  day}`;
+    return moment(date).format('YYYY-MM-DD');
   }
 
   setDateClass = ({date, view}) => {
-    let val = this.formatDate(date).toString().split("/");
+    let val = this.formatDate(date).split("-");
     val = val[0] + val[1] + val[2];
     return "_" + val.toString();
   }
