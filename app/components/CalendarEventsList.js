@@ -66,7 +66,7 @@ export class CalendarEventsList extends Component{
 
 
   const view = this.props.result.map((d) =>
-    <ListGroup.Item variant="primary">
+    <ListGroup.Item className="list-group-item-action">
       <Button id={d.id} onClick={delButtonClick} className="event-delete">
         Delete
       </Button>
@@ -89,7 +89,7 @@ export class CalendarEventsList extends Component{
 
 
   return(
-    <div>
+    <div Style="margin-top: 1%; margin-right: 1%;">
       <InputGroup className="mb-3">
         <InputGroup.Prepend>
           <Button variant="primary" onClick={buttonClick}>Add</Button>
