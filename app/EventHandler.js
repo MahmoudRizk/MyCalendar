@@ -3,7 +3,7 @@ import {ipcMain } from 'electron';
 import {CalEvent} from './models/CalEvent';
 
 const events = require('events'); //NodeJS events api
-import {factoryAPI} from './api/factory';
+import factoryAPI from './api/factory';
 
 export class NodeEvents extends events{
   //Singleton object that handles events within main process.
@@ -94,7 +94,4 @@ export class EventHandler{
 
 }
 
-module.exports = {
-  NodeEvents: NodeEvents,
-  EventHandler: EventHandler,
-}
+export default {NodeEvents, EventHandler};
