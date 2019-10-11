@@ -64,6 +64,8 @@
       "app/app.html",
       "app/main.prod.js",
       "app/main.prod.js.map",
+      "app/modals/settings.html",
+      "app/modals/settings.js",
       "package.json"
     ],
     "dmg": {
