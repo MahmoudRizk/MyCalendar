@@ -2,6 +2,8 @@ const {HOME} = require('./constants/directories');
 import {ipcMain } from 'electron';
 import {CalEvent} from './models/CalEvent';
 
+import {factoryAPI} from './api/factory';
+
 
 export class EventHandler{
   constructor(){
@@ -42,6 +44,19 @@ export class EventHandler{
         event.returnValue = success;
       });
     });
+
+    ipcMain.on("getAuthorize", (event, args) => {
+      const api = factoryAPI(args.accountType);
+      api.authorize();
+      event.returnValue = "";
+    });
+
+    ipcMain.on("saveToken", (event, args) => {
+      const api = factoryAPI(args.accountType);
+      api.saveToken(args.value);
+      event.returnValue = "";
+    });
+
 
   }
 

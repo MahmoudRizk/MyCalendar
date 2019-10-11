@@ -10,11 +10,16 @@ function modalClose(){
 
 function GmailLoginBtn(){
  console.log("btn pressed!!");
+ $('#gmail-form').css('display', 'block');
+ const response = ipcRenderer.sendSync('getAuthorize', {accountType: 'gmail'});
+ console.log(response);
 }
 
 function gmailAdd(){
   console.log("button pressed!!");
   let val = $('#gmail-token').val();
+  const response = ipcRenderer.sendSync('saveToken', {accountType: 'gmail', value: val});
+  console.log(a);
 }
 
 function outlookAdd(){
