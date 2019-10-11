@@ -111,6 +111,10 @@ export class App extends Component{
   onClickDay = (value) => console.log('Clicked day: ', value);
   tileContent =  ({ date, view }) => view === 'month' ? <div Style="visibility: hidden;">.</div> : null
 
+  sync = () => {
+    console.log('Sync btn!!');
+    const response = ipcRenderer.sendSync("syncCalendar");
+  }
 
   componentDidMount(){
     this.tagCalendarTiles(this.state.date);
@@ -140,6 +144,7 @@ export class App extends Component{
               onClickDay={this.onClickDay}
               tagCalendarTiles={this.tagCalendarTiles}
               tileContent={this.tileContent}
+              sync={this.sync}
             />
           </Col>
           <Col sm={4} className="CalendarEventsList-col">

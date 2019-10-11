@@ -17,6 +17,8 @@ export class MyCalendar extends Calendar{
 
   componentDidMount(){
     this.customView();
+    $(".react-calendar__navigation").append("<button class='btn' id='sync' style='background: green; color: #fff; margin-top: 0.5%;'>Sync</button>");
+    $(".react-calendar__navigation").children('#sync').click(this.props.sync);
   }
 
   componentDidUpdate() {

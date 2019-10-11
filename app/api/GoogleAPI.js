@@ -7,6 +7,7 @@ import {AbstractAPI} from './AbstractAPI'
 const {HOME} = require('../constants/directories');
 const path = require('path');
 
+import {NodeEvents} from '../EventHandler';
 
 export class GoogleAPI extends AbstractAPI{
   constructor(){
@@ -49,9 +50,43 @@ export class GoogleAPI extends AbstractAPI{
 
   }
 
+  callback(err, res){
+    let results = [];
+    if (err) return console.log('The API returned an error: ' + err);
+    const events = res.data.items;
+    if (events.length) {
+      console.log('Upcoming 400 events:', events);
+      events.map((event, i) => {
+        const start = event.start.dateTime || event.start.date;
+        // console.log(`${start} - ${event.summary}`);
+        results.push({date: start.split('T')[0] , entry: event.summary })
+        // results.push(`${start.split('T')[0]} - ${event.summary}`);
+      });
+    } else {
+      console.log('No upcoming events found.');
+    }
+
+    const eventEmitter = new NodeEvents();
+    eventEmitter.emit('test', results);
+  }
 
   fetchData(){
+    const auth = this.oAuth2Client;
+    const calendar = google.calendar({version: 'v3', auth});
+    const startDate = new Date();
+    startDate.setDate(1);
+    startDate.setMonth(-1);
+    let results;
+    calendar.events.list({
+      calendarId: 'primary',
+      timeMin: startDate.toISOString(),
+      maxResults: 400,
+      singleEvents: true,
+      orderBy: 'startTime',
+    }, this.callback.bind(this));
 
+    // console.log('------>results', results);
+    return 'fetchData';
   }
 }
 

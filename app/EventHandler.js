@@ -70,7 +70,24 @@ export class EventHandler{
       event.returnValue = "";
     });
 
+    ipcMain.on("syncCalendar", (event, args) => {
+      console.log("Sync btn from backend!!");
+      const api = factoryAPI('gmail');
+      const results = api.fetchData();
+      console.log(results);
+      event.returnValue = "";
+    });
 
+    const eventListener = new NodeEvents();
+
+    eventListener.on('test', (args) => {
+      console.log('------->test event reveived!!!', args);
+      const calEvent = new CalEvent();
+      args.map((a) => {
+        calEvent.addEntry(a).then();
+      })
+
+    });
 
 
   }
