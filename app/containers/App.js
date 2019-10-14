@@ -1,17 +1,15 @@
 import React, {Component} from 'react';
 import {ipcRenderer} from  'electron';
 import {Container, Row, Col} from 'react-bootstrap';
-const moment = require('moment');
+import $ from 'jquery';
 
 import {MyCalendar} from '../components/MyCalendar'
 import {CalendarEventsList} from '../components/CalendarEventsList'
-
 import '../assets/css/App.css';
 
-import $ from 'jquery';
+const moment = require('moment');
 
 export class App extends Component{
-
   constructor(props) {
     super();
     this.state = {
@@ -21,40 +19,30 @@ export class App extends Component{
   }
 
   tagCalendarTiles = (date) =>{
-    const response = ipcRenderer.sendSync("getMonthYearEvents", {date: this.formatDate(date)});
-    console.log('tagCalendarTiles');
-    console.log(this.state);
+    const response = ipcRenderer.sendSync("CalEvent_queryByMonthYear", {date: this.formatDate(date)});
     response.map((res) => {
-      console.log(res.date, res.count);
       let val = res.date.split("-");
       val = val[0] + val[1] + val[2];
-      // $("._"+val).css( "background", "#deeeff" );
       $("._"+val).children().css( "font-weight", "900" ).css( "visibility", "visible" );
     });
     if(this.state.result.length === 0){
       let val = this.formatDate(this.state.date).split("-");
       val = val[0] + val[1] + val[2];
-      // $("._"+val).css("background", "");
       $("._"+val).children().css( "font-weight", "normal" )
       $("._"+val).children("div").css( "visibility", "hidden" );
     }
   }
 
   onChange = date => {
-    console.log("=======>", date);
-    console.log("=======>", this.state.date);
     this.setState({ date });
-    const result = ipcRenderer.sendSync("dateChange", {date: this.formatDate(date)});
+    const result = ipcRenderer.sendSync("CalEvent_queryByDate", {date: this.formatDate(date)});
     this.setState({result});
-    if(date.getMonth() !== this.state.date.getMonth() || date.getYear() !== this.state.date.getYear()){
-       // this.tagCalendarTiles(date);
-    }
   }
 
-  addCalendarEvent = entry => {
-    const response = ipcRenderer.sendSync("addCalendarEvent", {date: this.formatDate(this.state.date), entry: entry});
+  addCalendarEvent = value => {
+    const response = ipcRenderer.sendSync("CalEvent_addEntry", {date: this.formatDate(this.state.date), value: value});
     if(response.success){
-      this.state.result.push({date: this.formatDate(this.state.date), id: response.id, name: entry});
+      this.state.result.push({date: this.formatDate(this.state.date), id: response.id, value: value});
       const result = this.state.result;
       this.setState({result});
     }
@@ -64,7 +52,7 @@ export class App extends Component{
   }
 
   delCalendarEvent = (id) => {
-    const response = ipcRenderer.sendSync("delCalendarEvent", {id: id});
+    const response = ipcRenderer.sendSync("CalEvent_delEntry", {id: id});
     if(response){
       const pos = this.state.result.map(function(e) { return e.id.toString(); }).indexOf(id.toString());
       this.state.result.splice(pos, 1);
@@ -76,11 +64,11 @@ export class App extends Component{
     }
   }
 
-  updateCalendarEvent = (id, entry) => {
-    const response = ipcRenderer.sendSync("updateCalendarEvent", {id: id, entry: entry});
+  updateCalendarEvent = (id, value) => {
+    const response = ipcRenderer.sendSync("CalEvent_updateEntry", {id: id, value: value});
     if(response){
       const pos = this.state.result.map(function(e) { return e.id.toString(); }).indexOf(id.toString());
-      this.state.result[pos].name = entry;
+      this.state.result[pos].value = value;
       this.setState(this.state.result);
     }
     else{
@@ -99,31 +87,27 @@ export class App extends Component{
   }
 
   onActiveDateChange = ({ activeStartDate, view }) => {
-    console.log("onActiveDateChange", activeStartDate);
     let date = activeStartDate;
     date.setDate(this.state.date.getDate());
     this.setState({date});
     this.onChange(date);
-    // this.tagCalendarTiles(activeStartDate);
   }
 
   onDrillDown = this.onActiveDateChange;
-  onClickDay = (value) => console.log('Clicked day: ', value);
   tileContent =  ({ date, view }) => view === 'month' ? <div Style="visibility: hidden;">.</div> : null
 
   sync = () => {
     console.log('Sync btn!!');
-    const response = ipcRenderer.sendSync("syncCalendar");
+    const response = ipcRenderer.sendSync("api_fetchData");
   }
 
   componentDidMount(){
     this.tagCalendarTiles(this.state.date);
-    const result = ipcRenderer.sendSync("dateChange", {date: this.formatDate(this.state.date)});
+    const result = ipcRenderer.sendSync("CalEvent_queryByDate", {date: this.formatDate(this.state.date)});
     this.setState({result});
   }
 
   componentDidUpdate(){
-    console.log('componentDidUpdate', this.state);
     this.tagCalendarTiles(this.state.date);
   }
 
@@ -141,8 +125,6 @@ export class App extends Component{
               tileClassName={this.setDateClass}
               onActiveDateChange = {this.onActiveDateChange}
               onDrillDown={this.onDrillDown}
-              onClickDay={this.onClickDay}
-              tagCalendarTiles={this.tagCalendarTiles}
               tileContent={this.tileContent}
               sync={this.sync}
             />

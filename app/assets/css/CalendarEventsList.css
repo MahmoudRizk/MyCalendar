@@ -14,6 +14,4 @@
 .events-list {
   overflow-y: scroll;
   height: 90vh;
-
-  /* height: 500px; */
 }

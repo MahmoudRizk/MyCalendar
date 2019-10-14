@@ -7,13 +7,11 @@ export class AbstractAPI{
       throw new TypeError("fetchData function is not implemented.");
     }
   }
-
   /*This class is an abstract class, so when extending it these functions must be implemented*/
   /*
-    authenticate();
+    authorize();
     fetchData();
   */
-
 }
 
 export default AbstractAPI;

@@ -4,6 +4,5 @@ export class Migrations{
   constructor(){
     CalEvent.migrate();
   }
-
 }
   export default Migrations;

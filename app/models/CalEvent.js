@@ -22,14 +22,14 @@ class MigrationSource {
     return migration;
   }
 
-  getMigration(migration) {
+  getMigration(migration){
     switch(migration) {
       case 'migration1':
         return {
           up(knex)   {
             return knex.schema.createTable('cal_event', function(t) {
                   t.increments('id').unsigned().primary();
-                  t.text('name').nullable();
+                  t.text('value').nullable();
                   t.text('date').nullable();
               });
           },
@@ -48,17 +48,18 @@ export class CalEvent{
 		knex.migrate.latest({migrationSource: new MigrationSource()});
 	}
 
-	async queryByDate(date){
+	async queryByDate(args){
 		var data = [];
-	  const result = knex.select(["id", "name", "date"]).from("cal_event").where('date', '=', date);
+	  const result = knex.select(["id", "value", "date"]).from("cal_event").where('date', '=', args.date);
 	  await result.then((rows) => {
 	    data = rows;
 	  })
 	  return data;
 	}
 
-	async queryByMonthYear(date){
+	async queryByMonthYear(args){
 		var data = [];
+		let date = args.date;
 		date = date.split("-");
 		date = date[0]+"-"+date[1]+"-%";
 		const result = knex.select([knex.raw('COUNT(date) as count'), "date"])
@@ -68,15 +69,17 @@ export class CalEvent{
 	  await result.then((rows) => {
 	    data = rows;
 	  })
-		console.log("------>", date);
-		console.log(data);
 		return data;
-
 	}
 
 	async addEntry(args){
 		var response = {};
-		await knex("cal_event").insert([{name: args.entry, date: args.date}]).then((args)=>{
+		let entries = [];
+		if(args.length)
+			entries = args;
+		else
+			entries = [args];
+		await knex("cal_event").insert(entries).then((args)=>{
 			response.success = true;
 			response.id = args[0];
 		})
@@ -100,7 +103,7 @@ export class CalEvent{
 
 	async updateEntry(args){
 		var success;
-		await knex("cal_event").where({id: args.id}).update({'name': args.entry}).then(()=>{
+		await knex("cal_event").where({id: args.id}).update({'value': args.value}).then(()=>{
 			success = true;
 		})
 		.catch(()=>{
@@ -108,7 +111,6 @@ export class CalEvent{
 		});
 		return success;
 	}
-
 }
 
 

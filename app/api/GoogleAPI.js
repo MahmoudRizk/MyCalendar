@@ -3,11 +3,10 @@ const opn = require('opn');
 const fs = require('fs');
 
 import {AbstractAPI} from './AbstractAPI'
+import {NodeEvents} from '../EventHandler';
 
 const {HOME} = require('../constants/directories');
 const path = require('path');
-
-import {NodeEvents} from '../EventHandler';
 
 export class GoogleAPI extends AbstractAPI{
   constructor(){
@@ -58,16 +57,13 @@ export class GoogleAPI extends AbstractAPI{
       console.log('Upcoming 400 events:', events);
       events.map((event, i) => {
         const start = event.start.dateTime || event.start.date;
-        // console.log(`${start} - ${event.summary}`);
-        results.push({date: start.split('T')[0] , entry: event.summary })
-        // results.push(`${start.split('T')[0]} - ${event.summary}`);
+        results.push({date: start.split('T')[0] , value: event.summary})
       });
     } else {
       console.log('No upcoming events found.');
     }
-
     const eventEmitter = new NodeEvents();
-    eventEmitter.emit('test', results);
+    eventEmitter.emit('CalEvent_addEntry', results);
   }
 
   fetchData(){
@@ -85,7 +81,6 @@ export class GoogleAPI extends AbstractAPI{
       orderBy: 'startTime',
     }, this.callback.bind(this));
 
-    // console.log('------>results', results);
     return 'fetchData';
   }
 }
