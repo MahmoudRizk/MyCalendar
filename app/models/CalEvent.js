@@ -42,7 +42,9 @@ class MigrationSource {
 }
 
 export class CalEvent{
-	constructor(){};
+	constructor(db=knex){
+		this.db = db;
+	};
 
 	static migrate(){
 		knex.migrate.latest({migrationSource: new MigrationSource()});
@@ -50,7 +52,7 @@ export class CalEvent{
 
 	async queryByDate(args){
 		var data = [];
-	  const result = knex.select(["id", "value", "date"]).from("cal_event").where('date', '=', args.date);
+	  const result = this.db.select(["id", "value", "date"]).from("cal_event").where('date', '=', args.date);
 	  await result.then((rows) => {
 	    data = rows;
 	  })
@@ -59,10 +61,8 @@ export class CalEvent{
 
 	async queryByMonthYear(args){
 		var data = [];
-		let date = args.date;
-		date = date.split("-");
-		date = date[0]+"-"+date[1]+"-%";
-		const result = knex.select([knex.raw('COUNT(date) as count'), "date"])
+		let date = args.date.match(/\d*-\d*-/)[0].concat('%');
+		const result = this.db.select([this.db.raw('COUNT(date) as count'), "date"])
 											  .from("cal_event")
 												.where('date', 'like', date)
 												.groupBy('date');
@@ -79,7 +79,7 @@ export class CalEvent{
 			entries = args;
 		else
 			entries = [args];
-		await knex("cal_event").insert(entries).then((args)=>{
+		await this.db.insert(entries).into('cal_event').then((args)=>{
 			response.success = true;
 			response.id = args[0];
 		})
@@ -92,7 +92,7 @@ export class CalEvent{
 
 	async delEntry(args){
 		var success;
-		await knex("cal_event").where({id: args.id}).del().then(()=>{
+		await this.db.from("cal_event").where({id: args.id}).del().then(()=>{
 			success = true;
 		})
 		.catch(()=>{
@@ -103,7 +103,7 @@ export class CalEvent{
 
 	async updateEntry(args){
 		var success;
-		await knex("cal_event").where({id: args.id}).update({'value': args.value}).then(()=>{
+		await this.db.from("cal_event").where({id: args.id}).update({'value': args.value}).then(()=>{
 			success = true;
 		})
 		.catch(()=>{
