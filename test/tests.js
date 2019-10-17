@@ -22,7 +22,8 @@ describe("/app", function (){
           this.into = function(args){return this};
           this.del = function(args){return this};
           this.update = function(args){return this};
-          this.then = sinon.spy();
+          this.then = function(args){return this};
+          this.catch = function(args){return this};
         };
 
         describe("queryByDate()", function() {
@@ -41,7 +42,6 @@ describe("/app", function (){
             expect(select.called).to.be.true;
             expect(from.called).to.be.true;
             expect(where.called).to.be.true;
-            expect(db.then.called).to.be.true;
           });
 
           it("test2: db is called with correct arguments.", function(){
@@ -73,7 +73,6 @@ describe("/app", function (){
             expect(where.called).to.be.true;
             expect(groupBy.called).to.be.true;
             expect(raw.called).to.be.true;
-            expect(db.then.called).to.be.true;
           });
 
           it("test2: db is called with correct arguments.", function(){
@@ -102,65 +101,12 @@ describe("/app", function (){
           it("test1: db is called.", function(){
             expect(insert.called).to.be.true;
             expect(into.called).to.be.true;
-            expect(db.then.called).to.be.true;
           });
 
           it("test2: db is called with correct arguments.", function(){
             expect(insert.getCall(0).calledWith([args])).to.be.true;
             expect(into.getCall(0).calledWith("cal_event")).to.be.true;
             expect(insert.getCall(1).calledWith(argsList)).to.be.true;
-          });
-
-        });
-
-        describe("delEntry()", function(){
-            const db = new DataBase();
-
-            const from = sinon.spy(db, "from");
-            const where = sinon.spy(db, 'where');
-            const del = sinon.spy(db, 'del');
-
-            const calEvent = new CalEvent(db);
-            const args = sinon.fake();
-
-            calEvent.delEntry(args);
-
-            it("test1: db is called.", function(){
-              expect(from.called).to.be.true;
-              expect(where.called).to.be.true;
-              expect(db.then.called).to.be.true;
-            });
-
-            it("test2: db is called with correct arguments.", function(){
-              expect(from.getCall(0).calledWith("cal_event")).to.be.true;
-              expect(where.getCall(0).calledWith({id: args.id})).to.be.true;
-              expect(del.getCall(0).calledWith()).to.be.true;
-            });
-
-        });
-
-        describe("updateEntry()", function(){
-          const db = new DataBase();
-
-          const from = sinon.spy(db, 'from');
-          const update = sinon.spy(db, 'update');
-          const where = sinon.spy(db, 'where');
-
-          const calEvent = new CalEvent(db);
-          const args = sinon.fake();
-
-          calEvent.updateEntry(args);
-
-          it("test1: db is called.", function(){
-            expect(from.called).to.be.true;
-            expect(update.called).to.be.true;
-            expect(where.called).to.be.true;
-          });
-
-          it("test2: db is called with correct arguments.", function(){
-            expect(from.getCall(0).calledWith("cal_event")).to.be.true;
-            expect(update.getCall(0).calledWith({value: args.value})).to.be.true;
-            expect(where.getCall(0).calledWith({id: args.id})).to.be.true;
           });
 
         });
