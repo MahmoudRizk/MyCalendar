@@ -1,118 +1,154 @@
-const chai = require("chai");
+import chai from 'chai'
+import chaiAsPromised from 'chai-as-promised'
 const expect = chai.expect;
 const sinon = require("sinon");
 
-const moment = require('moment');
+chai.should()
+chai.use(chaiAsPromised)
 
-import {CalEvent} from '../app/models/CalEvent';
+import {CalEvent, MigrationSource} from '../app/models/CalEvent';
 
+const path = require('path');
+const fs = require('fs');
+
+const TEST_PATH = __dirname;
+
+const knex = require("knex")({
+	client: "sqlite3",
+	connection: {
+		filename: path.join(TEST_PATH, 'database_test.sqlite')
+	}
+});
 
 describe("/app", function (){
   describe("/models", function(){
     describe("/CalEvent.js", function(){
+
+      before(function() { // Creating testing Database.
+        const testEntries = JSON.parse(fs.readFileSync(path.join(TEST_PATH, 'CalEvent_testEntries.json')));
+        return new Promise((resolve) => {
+          knex.migrate.latest({migrationSource: new MigrationSource()}).then(() => {
+            knex('cal_event').insert(testEntries.entries).then(() => {
+              resolve();
+            });
+          });
+        });
+      });
+
+      after(function() {
+        fs.unlinkSync(path.join(TEST_PATH, 'database_test.sqlite'));
+      });
+
       describe("CalEvent", function(){
 
-        const DataBase = function(name){ //fake Knex object.
-          this.select = function(args){return this};
-          this.from = function(args){return this};
-          this.where = function(args){return this};
-          this.groupBy = function(args){return this};
-          this.raw = function(args){return this};
-          this.insert = function(args){return this};
-          this.into = function(args){return this};
-          this.del = function(args){return this};
-          this.update = function(args){return this};
-          this.then = function(args){return this};
-          this.catch = function(args){return this};
-        };
+        const db = knex;
+        const calEvent = new CalEvent(db);
 
         describe("queryByDate()", function() {
-          const db = new DataBase();
-
-          const select = sinon.spy(db, 'select');
-          const from = sinon.spy(db, 'from');
-          const where = sinon.spy(db, 'where');
-
-          const calEvent = new CalEvent(db);
-          const testDate = moment(new Date()).format('YYYY-MM-DD');
-
-          calEvent.queryByDate({date: testDate});
-
-          it("test1: db is called.", function(){
-            expect(select.called).to.be.true;
-            expect(from.called).to.be.true;
-            expect(where.called).to.be.true;
+          it("Case 1: Handling valid Date format 'YYYY-MM-DD'", async function(){
+            await calEvent.queryByDate({date: '1840-10-01'}).should.be.fulfilled;
+            await calEvent.queryByDate({date: '2019-01-25'}).should.be.fulfilled;
+            await calEvent.queryByDate({date: '1111-11-10'}).should.be.fulfilled;
+            await calEvent.queryByDate({date: '2000-05-23'}).should.be.fulfilled;
+            await calEvent.queryByDate({date: '3000-12-20'}).should.be.fulfilled;
           });
-
-          it("test2: db is called with correct arguments.", function(){
-            expect(select.getCall(0).calledWith(["id", "value", "date"])).to.be.true;
-            expect(from.getCall(0).calledWith("cal_event")).to.be.true;
-            expect(where.getCall(0).calledWith("date", "=", testDate)).to.be.true;
+          it("Case 2: Handling invalid Date formats", async function(){
+            await calEvent.queryByDate({date: '1840-100-01'}).should.be.rejected;
+            await calEvent.queryByDate({date: '2019-0-25'}).should.be.rejected;
+            await calEvent.queryByDate({date: '2000-1-1'}).should.be.rejected;
+            await calEvent.queryByDate({date: '2000-005-283'}).should.be.rejected;
+            await calEvent.queryByDate({date: '1999-20-50'}).should.be.rejected;
           });
-
+          it("Case 3: Normal flow.", async function(){
+            await calEvent.queryByDate({date: '2019-09-29'}).then((results) => {
+              expect(Array.isArray(results)).to.be.true;
+              results.map((res) => {
+                expect(res).to.have.all.keys('id', 'date', 'value');
+                expect(res.date.toString()).to.equal('2019-09-29');
+              });
+            });
+          });
+          it("Case 4: Handling date not in DataBase.", async function(){
+            await calEvent.queryByDate({date: '1840-12-01'}).then((results) => {
+              expect(Array.isArray(results)).to.be.true;
+              expect(results.length).to.equal(0);
+            });
+          });
         });
 
         describe("queryByMonthYear()", function() {
-          const db = new DataBase();
-
-          const select = sinon.spy(db, 'select');
-          const from = sinon.spy(db, 'from');
-          const where = sinon.spy(db, 'where');
-          const groupBy = sinon.spy(db, 'groupBy');
-          const raw = sinon.spy(db, 'raw');
-
-          const calEvent = new CalEvent(db);
-
-          const testDate = moment(new Date()).format('YYYY-MM-DD');
+          const testDate = '2019-09-29';
           const patternDate = testDate.match(/\d*-\d*-/)[0].concat('%');
-          calEvent.queryByMonthYear({date: testDate});
-
-          it("test1: db is called.", function(){
-            expect(select.called).to.be.true;
-            expect(from.called).to.be.true;
-            expect(where.called).to.be.true;
-            expect(groupBy.called).to.be.true;
-            expect(raw.called).to.be.true;
+          it("Case 1: Handling valid Date format 'YYYY-MM-DD'", async function(){
+            await calEvent.queryByDate({date: '1840-10-01'}).should.be.fulfilled;
+            await calEvent.queryByDate({date: '2019-01-25'}).should.be.fulfilled;
+            await calEvent.queryByDate({date: '1111-11-10'}).should.be.fulfilled;
+            await calEvent.queryByDate({date: '2000-05-23'}).should.be.fulfilled;
+            await calEvent.queryByDate({date: '3000-12-20'}).should.be.fulfilled;
           });
-
-          it("test2: db is called with correct arguments.", function(){
-            expect(select.getCall(0).calledWith([raw.getCall(0).thisValue, "date"])).to.be.true;
-            expect(from.getCall(0).calledWith("cal_event")).to.be.true;
-            expect(where.getCall(0).calledWith("date", "like", patternDate)).to.be.true;
-            expect(groupBy.getCall(0).calledWith("date")).to.be.true;
-            expect(raw.getCall(0).calledWith("COUNT(date) as count")).to.be.true;
+          it("Case 2: Handling invalid Date formats", async function(){
+            await calEvent.queryByDate({date: '1840-100-01'}).should.be.rejected;
+            await calEvent.queryByDate({date: '2019-0-25'}).should.be.rejected;
+            await calEvent.queryByDate({date: '2000-1-1'}).should.be.rejected;
+            await calEvent.queryByDate({date: '2000-005-283'}).should.be.rejected;
+            await calEvent.queryByDate({date: '1999-20-50'}).should.be.rejected;
           });
-
+          it("Case 3: Normal flow, entries of same month & year.", async function(){
+            await calEvent.queryByMonthYear({date: '2019-09-29'}).then((results) => {
+              expect(Array.isArray(results)).to.be.true;
+              results.map((res) => {
+                expect(res).to.have.all.keys('count', 'date');
+                expect(res.date.toString().match(/\d*-\d*-/)[0].concat('%')).to.equal('2019-09-%');
+              });
+            });
+          });
         });
 
         describe("addEntry()", function(){
-          const db = new DataBase();
-
-          const insert = sinon.spy(db, 'insert');
-          const into = sinon.spy(db, 'into');
-
-          const calEvent = new CalEvent(db);
-          const args = sinon.fake();
-          const argsList = [sinon.fake()];
-
-          calEvent.addEntry(args);
-          calEvent.addEntry(argsList);
-
-          it("test1: db is called.", function(){
-            expect(insert.called).to.be.true;
-            expect(into.called).to.be.true;
+          const entry = {date:"2015-05-15", value:"blablabla"};
+          const badEntry = {date:"2015-05-15", value:""}
+          it("Case 1: Passing single entry", async function(){
+            await calEvent.addEntry(entry).should.be.fulfilled;
           });
-
-          it("test2: db is called with correct arguments.", function(){
-            expect(insert.getCall(0).calledWith([args])).to.be.true;
-            expect(into.getCall(0).calledWith("cal_event")).to.be.true;
-            expect(insert.getCall(1).calledWith(argsList)).to.be.true;
+          it("Case 2: Passing list of entries", async function(){
+            await calEvent.addEntry([entry]).should.be.fulfilled;
           });
-
+          it("Case 3: Passing invalid entry", async function(){
+            await calEvent.addEntry(badEntry).should.be.rejected;
+          });
+          it("Case 4: Passing invalid list of entries", async function(){
+            await calEvent.addEntry([badEntry]).should.be.rejected;
+          });
+          it("Case 5: Checking returned id.", async function(){
+            await calEvent.addEntry(entry).then((args) => {
+              expect(typeof args.id === 'number').to.be.true;
+              expect(args.success).to.be.true;
+            });
+          });
         });
 
+        describe("delEntry()", function(){
+          const trueId = {id: "2"};
+          const falseId = {id: "8888888"};
+          it("Case 1: Passing true id.", async function(){
+            await calEvent.delEntry(trueId).should.be.fulfilled.and.eventually.equal(1);
+          });
+          it("Case 2: Passing false id.", async function(){
+            await calEvent.delEntry(falseId).should.be.fulfilled.and.eventually.equal(0);
+          });
+        });
+
+        describe("updateEntry()", function(){
+          const trueId = {id: "3", value:"abc test"};
+          const falseId = {id: "8888888", value:"xyz test"};
+          it("Case 1: Passing true id.", async function(){
+            await calEvent.updateEntry(trueId).should.be.fulfilled.and.eventually.equal(1);
+          });
+          it("Case 2: Passing false id.", async function(){
+            await calEvent.updateEntry(falseId).should.be.fulfilled.and.eventually.equal(0);
+          });
+        });
       });
     });
   });
-
 });
