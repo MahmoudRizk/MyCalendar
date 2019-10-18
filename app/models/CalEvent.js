@@ -8,7 +8,7 @@ const knex = require("knex")({
 	}
 });
 
-class MigrationSource {
+export class MigrationSource {
   constructor(){};
   // Must return a Promise containing a list of migrations.
   // Migrations can be whatever you want, they will be passed as
@@ -29,8 +29,8 @@ class MigrationSource {
           up(knex)   {
             return knex.schema.createTable('cal_event', function(t) {
                   t.increments('id').unsigned().primary();
-                  t.text('value').nullable();
-                  t.text('date').nullable();
+                  t.text('value').notNullable();
+                  t.text('date').notNullable();
               });
           },
           down(knex) {
@@ -50,68 +50,90 @@ export class CalEvent{
 		knex.migrate.latest({migrationSource: new MigrationSource()});
 	}
 
-	async queryByDate(args){
-		var data = [];
-	  const result = this.db.select(["id", "value", "date"]).from("cal_event").where('date', '=', args.date);
-	  await result.then((rows) => {
-	    data = rows;
-	  })
-	  return data;
+	_checkValid(date){
+		if(date.toString().match(/^\d*-\d\d-\d\d$/))
+			if(parseInt(date.toString().split('-')[1]) <= 12)
+				if(parseInt(date.toString().split('-')[2]) <= 31)
+					return true;
+
+		return false;
 	}
 
-	async queryByMonthYear(args){
-		var data = [];
-		let date = args.date.match(/\d*-\d*-/)[0].concat('%');
-		const result = this.db.select([this.db.raw('COUNT(date) as count'), "date"])
-											  .from("cal_event")
-												.where('date', 'like', date)
-												.groupBy('date');
-	  await result.then((rows) => {
-	    data = rows;
-	  })
-		return data;
+  queryByDate(args){
+		return new Promise((resolve, reject) => {
+			if(!this._checkValid(args.date.toString()))
+				reject(throw new Error('Invalid date format.'));
+			this.db.select(["id", "value", "date"]).from("cal_event").where('date', '=', args.date)
+			.then((rows) => {
+				resolve(rows);
+		  })
+			.catch((err) => {
+				reject(err);
+			});
+		});
 	}
 
-	async addEntry(args){
-		var response = {};
+	queryByMonthYear(args){
+		return new Promise((resolve, reject) => {
+			if(!this._checkValid(args.date.toString()))
+				reject(throw new Error('Invalid date format.'));
+			const date = args.date.match(/\d*-\d*-/)[0].concat('%');
+			this.db.select([this.db.raw('COUNT(date) as count'), "date"])
+		   .from("cal_event").where('date', 'like', date).groupBy('date').then((rows) => {
+			 	 resolve(rows);
+		   }).catch((err) => {
+				 reject(err);
+			 });
+		});
+	}
+
+	addEntry(args){
+		let response = {};
 		let entries = [];
+
 		if(args.length)
 			entries = args;
 		else
 			entries = [args];
-		await this.db.insert(entries).into('cal_event').then((args)=>{
-			response.success = true;
-			response.id = args[0];
-		})
-		.catch(()=>{
-			response.success = false;
-			response.id = "";
+
+		return new Promise((resolve, reject) => {
+			entries.map((it) => {
+				if(!this._checkValid(it.date.toString()) || !it.value)
+					reject(throw new Error('Invalid entry format'));
+			})
+			this.db.insert(entries).into('cal_event').then((args)=>{
+				response.success = true;
+				response.id = args[0];
+				resolve(response);
+			})
+			.catch((err) => {
+				reject(err);
+			});
 		});
-		return response;
 	}
 
-	async delEntry(args){
-		var success;
-		await this.db.from("cal_event").where({id: args.id}).del().then(()=>{
-			success = true;
-		})
-		.catch(()=>{
-			success = false;
+	delEntry(args){
+		return new Promise((resolve, reject) => {
+			this.db.from("cal_event").where({id: args.id}).del().then((args)=>{
+				resolve(args);
+			})
+			.catch((err) => {
+				reject(err);
+			});
 		});
-		return success;
 	}
 
-	async updateEntry(args){
-		var success;
-		await this.db.from("cal_event").where({id: args.id}).update({'value': args.value}).then(()=>{
-			success = true;
-		})
-		.catch(()=>{
-			success = false;
+	updateEntry(args){
+		return new Promise((resolve, reject) => {
+			this.db.from("cal_event").where({id: args.id}).update({'value': args.value}).then((args)=>{
+				resolve(args);
+			})
+			.catch((err) => {
+				reject(err);
+			});
 		});
-		return success;
 	}
 }
 
 
-export default CalEvent;
+export default {CalEvent, MigrationSource};
