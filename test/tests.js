@@ -16,7 +16,7 @@ const TEST_PATH = __dirname;
 const knex = require("knex")({
 	client: "sqlite3",
 	connection: {
-		filename: path.join(TEST_PATH, 'database_test.sqlite')
+		filename: ':memory:'
 	}
 });
 
@@ -33,10 +33,6 @@ describe("/app", function (){
             });
           });
         });
-      });
-
-      after(function() {
-        fs.unlinkSync(path.join(TEST_PATH, 'database_test.sqlite'));
       });
 
       describe("CalEvent", function(){

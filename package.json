@@ -1,8 +1,8 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "ElectronReact",
-  "version": "0.17.1",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "name": "my-calendar",
+  "productName": "MyCalendar",
+  "version": "1.0.0",
+  "description": "Calendar aggregator that brings all events in one place.",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --colors",
@@ -29,7 +29,7 @@
     "start": "cross-env NODE_ENV=production electron ./app/main.prod.js",
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development electron -r @babel/register ./app/main.dev.js",
     "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config configs/webpack.config.renderer.dev.babel.js",
-    "test": "mocha --compilers js:@babel/register ./test"
+    "test": "node ./node_modules/mocha/bin/mocha --require @babel/register ./test --exit"
   },
   "lint-staged": {
     "*.{js,jsx}": [
@@ -53,7 +53,7 @@
   },
   "main": "./app/main.prod.js",
   "build": {
-    "productName": "ElectronReact",
+    "productName": "MyCalendar",
     "appId": "org.develar.ElectronReact",
     "files": [
       "app/dist/",
@@ -99,48 +99,34 @@
     },
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate",
+      "owner": "mahmoudrizk",
+      "repo": "MyCalendar",
       "private": false
     }
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/MahmoudRizk/MyCalendar.git"
   },
   "author": {
-    "name": "Electron React Boilerplte Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "Mahmoud Rizk",
+    "email": "mahmoudahmedrizk@gmail.com",
+    "url": ""
   },
-  "contributors": [
-    {
-      "name": "Vikram Rangaraj",
-      "email": "vikr01@icloud.com",
-      "url": "https://github.com/vikr01"
-    },
-    {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
-    }
-  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
+    "url": ""
   },
   "keywords": [
     "electron",
-    "boilerplate",
     "react",
-    "redux",
     "flow",
     "sass",
     "webpack",
     "hot",
     "reload"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "",
   "jest": {
     "testURL": "http://localhost/",
     "moduleNameMapper": {
@@ -228,6 +214,7 @@
     "jest": "^23.6.0",
     "lint-staged": "^8.1.0",
     "mini-css-extract-plugin": "^0.4.4",
+    "mocha": "^6.2.1",
     "node-sass": "^4.10.0",
     "opencollective-postinstall": "^2.0.1",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
@@ -284,7 +271,7 @@
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
     "source-map-support": "^0.5.9",
-    "sqlite3": "^4.0.9"
+    "sqlite3": "^4.1.0"
   },
   "devEngines": {
     "node": ">=7.x",
@@ -292,7 +279,7 @@
     "yarn": ">=0.21.3"
   },
   "collective": {
-    "url": "https://opencollective.com/electron-react-boilerplate-594"
+    "url": ""
   },
   "browserslist": "electron 1.6"
 }
