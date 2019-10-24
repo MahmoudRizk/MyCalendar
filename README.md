@@ -2,7 +2,7 @@
 # MyCalendar
 
 It is the place where events are bundled together from your different online calendars (Google, Outlook, ...etc) with the 
-ability to create events localy on your device. 
+ability to create events locally on your device. 
 It saves your time and make your schedule organised.
 
 ## Getting Started
