@@ -9,7 +9,7 @@ It saves your time and make your schedule organised.
 
 These instructions will get you a copy of the project up and running on your local machine for development purposes.
 <br><br>OR<br><br>
-You can download the binaries directly from the release tab.
+You can download the <a href="https://github.com/MahmoudRizk/MyCalendar/releases">binaries</a> directly.
 
 ### Prerequisites
 
