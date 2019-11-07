@@ -3,6 +3,8 @@ import ListGroup from 'react-bootstrap/ListGroup'
 import Button from 'react-bootstrap/Button'
 import InputGroup from 'react-bootstrap/InputGroup'
 import FormControl from 'react-bootstrap/FormControl'
+import { MdDelete, MdCancel, MdCheck, MdEdit } from 'react-icons/md';
+import {Row, Col} from 'react-bootstrap';
 import $ from 'jquery';
 
 import '../assets/css/CalendarEventsList.css'
@@ -18,26 +20,32 @@ export class CalendarEventsList extends Component{
       }
     }
 
-    const delButtonClick = () => {
-      this.props.delCalendarEvent(event.srcElement.id);
-      console.log(event.srcElement.id);
+    const delButtonClick = (e, args) => {
+      let id = args.id
+      this.props.delCalendarEvent(id);
+      $("#" + id + ".event-edit").css("display", "");
+      $("#" + id + ".event-delete").css("display", "none");
+      $("#" + id + ".listGroup-content").css("display", "block");
+      $("#" + id + ".event-update").css("display", "none");
+      $("#" + id + ".event-cancel").css("display", "none");
+      $("#" + id + ".form-control.events-input-edit").css("display", "none");
     }
 
-    const editButtonClick = () => {
-      let id = event.srcElement.id;
+    const editButtonClick = (e, args) => {
+      let id = args.id;
       let content = $("#" + id + ".listGroup-content").css("display", "none");
       $("#" + id + ".event-edit").css("display", "none");
-      $("#" + id + ".event-delete").css("display", "none");
+      $("#" + id + ".event-delete").css("display", "inline");
       $("#" + id + ".event-update").css("display", "inline");
       $("#" + id + ".event-cancel").css("display", "inline");
       $("#" + id + ".form-control.events-input-edit").css("display", "block").val(content[0].innerHTML);
       console.log("edit button", id);
     }
 
-    const cancelButtonClick = () => {
-      let id = event.srcElement.id;
-      $("#" + id + ".event-edit").css("display", "inline");
-      $("#" + id + ".event-delete").css("display", "inline");
+    const cancelButtonClick = (e, args) => {
+      let id = args.id;
+      $("#" + id + ".event-edit").css("display", "");
+      $("#" + id + ".event-delete").css("display", "none");
       $("#" + id + ".listGroup-content").css("display", "block");
       $("#" + id + ".event-update").css("display", "none");
       $("#" + id + ".event-cancel").css("display", "none");
@@ -45,13 +53,13 @@ export class CalendarEventsList extends Component{
       console.log("Cancel button");
     }
 
-    const updateButtonClick = () => {
-      let id = event.srcElement.id;
+    const updateButtonClick = (e, args) => {
+      let id = args.id;
       let value = $("#" + id + ".form-control.events-input-edit").val();
       this.props.updateCalendarEvent(id, value);
 
-      $("#" + id + ".event-edit").css("display", "inline");
-      $("#" + id + ".event-delete").css("display", "inline");
+      $("#" + id + ".event-edit").css("display", "");
+      $("#" + id + ".event-delete").css("display", "none");
       $("#" + id + ".listGroup-content").css("display", "block");
       $("#" + id + ".event-update").css("display", "none");
       $("#" + id + ".event-cancel").css("display", "none");
@@ -62,21 +70,19 @@ export class CalendarEventsList extends Component{
 
     const view = this.props.result.map((d) =>
       <ListGroup.Item className="list-group-item-action">
-        <Button id={d.id} onClick={delButtonClick} className="event-delete">
-          Delete
-        </Button>
-        <Button id={d.id} onClick={editButtonClick} className="event-edit">
-          Edit
-        </Button>
-        <Button id={d.id} onClick={updateButtonClick} style={{display: 'none'}} className="event-update">
-          Update
-        </Button>
-        <Button id={d.id} onClick={cancelButtonClick} style={{display: 'none'}} className="event-cancel">
-          Cancel
-        </Button>
-        <div className="listGroup-content" id={d.id}>
-          {d.value}
-        </div>
+        <MdCheck size="1.2em" id={d.id} data-id={d.id} onClick={(e) => updateButtonClick(e, {id: d.id})} className="event-update"/>
+        <MdDelete size="1.2em" id={d.id} data-id={d.id} onClick={(e) => delButtonClick(e, {id: d.id})} className="event-delete"/>
+        <MdCancel size="1.2em" id={d.id} data-id={d.id} onClick={(e) => cancelButtonClick(e, {id: d.id})} className="event-cancel"/>
+        <Row>
+          <Col>
+            <div className="event-content listGroup-content" id={d.id}>
+              {d.value}
+            </div>
+          </Col>
+          <Col>
+            <MdEdit size="1.2em" id={d.id} data-id={d.id} onClick={(e) => editButtonClick(e, {id: d.id})} className="event-edit"/>
+          </Col>
+        </Row>
         <InputGroup className="mb-3">
           <FormControl aria-describedby="basic-addon1" className="events-input-edit" style={{display: 'none'}} id={d.id}/>
         </InputGroup>

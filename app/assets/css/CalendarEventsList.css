@@ -11,7 +11,56 @@
   background-color: #a1a1a1;
 }
 
+.list-group-item-action:hover .event-edit{
+  display: inline;
+}
+
 .events-list {
   overflow-y: scroll;
   height: 90vh;
+}
+
+.event-update{
+  display: none;
+
+}
+
+.event-cancel{
+  display: none;
+
+}
+
+.event-edit{
+  display: none;
+  margin-left: 95%;
+}
+
+.event-delete{
+  display: none;
+  margin-left: 83%;
+}
+
+
+.event-update:hover{
+  border-radius: 100%;
+  background: #A9A9A9;
+}
+
+.event-cancel:hover{
+  border-radius: 100%;
+  background: #A9A9A9;
+}
+
+.event-edit:hover{
+  border-radius: 100%;
+  background: #A9A9A9;
+}
+
+.event-delete:hover{
+  border-radius: 100%;
+  background: #A9A9A9;
+}
+
+.event-content{
+  word-wrap:break-word;
 }
