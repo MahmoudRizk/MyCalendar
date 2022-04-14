@@ -5,6 +5,9 @@ It is the place where events are bundled together from your different online cal
 ability to create events locally on your device. 
 It saves your time and make your schedule organised.
 
+[![Screenshot-from-2022-04-14-11-21-05.png](https://i.postimg.cc/ydrGGbcw/Screenshot-from-2022-04-14-11-21-05.png)](https://postimg.cc/47Vw7w85)
+[![Screenshot-from-2022-04-14-11-21-43.png](https://i.postimg.cc/pTbNV7pz/Screenshot-from-2022-04-14-11-21-43.png)](https://postimg.cc/670bYMVp)
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development purposes.
